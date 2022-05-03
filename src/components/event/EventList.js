@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
-import { getEvents } from "./EventManager"
+import { deleteEvent, getEvents } from "./EventManager"
 
 
 export const EventList = (props) => {
@@ -25,6 +26,12 @@ export const EventList = (props) => {
                         <div className="event__games">game: {event.game.title}</div>
                         <div className="event__players">{event.game.number_of_players} players needed</div>
                         <div className="event__skillLevel">Skill level is {event.game.skill_level}</div>
+                        <Link to={`/events/edit/${event.id}`}>Edit</Link>
+                        <button onClick={(evt) => {
+                            deleteEvent(event.id)
+                            .then(() => getEvents())
+                            .then(data => setEvents(data))
+                        }}>Delete</button>
                         <hr />
                     </section>
                 })
