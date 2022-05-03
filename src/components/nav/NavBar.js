@@ -7,10 +7,10 @@ export const NavBar = () => {
     return (
         <ul className="navbar">
             <li className="navbar__item">
-                Navigation link
+                <Link to="/">Game List</Link>
             </li>
             <li className="navbar__item">
-                Navigation link
+                <Link to="/events">events</Link>
             </li>
             <li className="navbar__item">
                 Navigation link
