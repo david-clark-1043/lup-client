@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useHistory } from "react-router-dom"
-import { deleteEvent, getEvents } from "./EventManager"
+import { deleteEvent, getEvents, joinEvent, leaveEvent } from "./EventManager"
 
 
 export const EventList = (props) => {
     const [events, setEvents] = useState([])
     const history = useHistory()
 
-    useEffect(() => {
+    const getAllEvents = () => {
         getEvents().then(data => setEvents(data))
+    }
+
+    useEffect(() => {
+        getAllEvents()
     }, [])
 
     return (
@@ -32,6 +36,17 @@ export const EventList = (props) => {
                             .then(() => getEvents())
                             .then(data => setEvents(data))
                         }}>Delete</button>
+                        {
+                            event.joined
+                            ? <button onClick={() => {
+                                leaveEvent(event.id)
+                                    .then(() => getAllEvents())
+                                }}>Leave</button>
+                                : <button onClick={() => {
+                                    joinEvent(event.id)
+                                    .then(() => getAllEvents())
+                            }}>Join</button>
+                        }
                         <hr />
                     </section>
                 })
