@@ -52,18 +52,18 @@ export const convertToCamelCase = (oldObject) => {
         }
     } else if (typeof oldObject === 'object' &&
                 oldObject !== null) {
-        // if object, recursively convert keys to snake_case
+        // if object, recursively convert keys to camelCase
         for (const key in oldObject) {
-            // checks if the value is an object to also convert to snake_case
+            // checks if the value is an object to also convert to camelCase
             const newValue = convertToCamelCase(oldObject[key])
-            // converts key name to snake_case
+            // converts key name to camelCase
             const newKey = snakeToCamelCase(key)
             newObject[newKey] = newValue
         }
         return newObject
     }
     // if not an object return the passed argument
-    // may have been edited to objects with snake_casing if it was an array
+    // may have been edited to objects with camelCasing if it was an array
     return oldObject
 }
 
