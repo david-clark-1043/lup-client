@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
 import { useHistory } from 'react-router-dom'
-import { createGame, getGameTypes } from './GameManager.js'
+import { createGame, getGameTypes, getSingleGame, updateGame } from './GameManager.js'
 
 
-export const GameForm = () => {
+export const GameForm = ( { editing }) => {
     const history = useHistory()
     const [gameTypes, setGameTypes] = useState([])
-
+    const { gameId } = useParams()
     /*
         Since the input fields are bound to the values of
         the properties of this state variable, you need to
@@ -24,7 +25,14 @@ export const GameForm = () => {
         // TODO: Get the game types, then set the state
         getGameTypes()
             .then(setGameTypes)
-    }, [])
+        if(editing && gameId){
+            getSingleGame(gameId)
+                .then(gameToEdit => {
+                    gameToEdit["gameTypeId"] = gameToEdit["gameType"]["id"]
+                    setCurrentGame(gameToEdit)
+                })
+        }
+    }, [editing, gameId])
 
     const changeGameState = (domEvent) => {
         // TODO: Complete the onChange function
@@ -102,16 +110,21 @@ export const GameForm = () => {
                     const game = {
                         maker: currentGame.maker,
                         title: currentGame.title,
-                        number_of_players: parseInt(currentGame.numberOfPlayers),
-                        skill_level: parseInt(currentGame.skillLevel),
-                        game_type: parseInt(currentGame.gameTypeId)
+                        numberOfPlayers: parseInt(currentGame.numberOfPlayers),
+                        skillLevel: parseInt(currentGame.skillLevel),
+                        gameType: parseInt(currentGame.gameTypeId)
                     }
 
                     // Send POST request to your API
-                    createGame(game)
-                        .then(() => history.push("/games"))
+                    if(editing) {
+                        updateGame(currentGame.id, game)
+                            .then(() => history.push("/games"))
+                    } else {
+                        createGame(game)
+                            .then(() => history.push("/games"))
+                    }
                 }}
-                className="btn btn-primary">Create</button>
+                className="btn btn-primary">{editing ? "Update" : "Create"}</button>
         </form>
     )
 }
